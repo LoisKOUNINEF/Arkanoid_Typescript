@@ -6,7 +6,7 @@ import PURPLE_BRICK_IMAGE from './images/brick-purple.png';
 
 // Grab the canvas element for calculating the brick width
 // depending on canvas width
-const canvas: HTMLCanvasElement | null = document.querySelector('#playField');
+const canvas: HTMLCanvasElement | null = document.querySelector('#playField');
 
 // Constants
 export const STAGE_PADDING = 10;
