@@ -25,10 +25,12 @@ let score = 0;
 
 function setGameOver(view: CanvasView) {
   view.drawInfo('Game Over !');
+  gameOver = false;
 }
 
 function setGameWon(view: CanvasView) {
   view.drawInfo('Nice Job !');
+  gameOver = false;
 }
 
 function gameLoop(
@@ -60,7 +62,13 @@ function gameLoop(
     view.drawScore(score);
   }
 
-  requestAnimationFrame(() => gameLoop (view, bricks, paddle, ball, collision));
+  if (ball.pos.y > view.canvas.height) gameOver = true;
+
+  if (bricks.length === 0) return setGameWon(view);
+
+  if (gameOver) return setGameOver(view);
+
+  requestAnimationFrame(() => gameLoop(view, bricks, paddle, ball, collision));
 }
 
 function startGame(view: CanvasView) {
@@ -72,7 +80,7 @@ function startGame(view: CanvasView) {
 
   const bricks = createBricks();
 
-  const ball = new Ball (
+  const ball = new Ball(
     BALL_SPEED,
     BALL_SIZE,
     { x: BALL_STARTX, y: BALL_STARTY},
