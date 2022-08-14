@@ -17,6 +17,8 @@ import {
   BALL_STARTY
 } from './setup';
 
+import { createBricks } from './helpers';
+
 let gameOver = false;
 let score = 0;
 
