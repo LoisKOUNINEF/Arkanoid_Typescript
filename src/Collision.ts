@@ -20,7 +20,7 @@ export class Collision {
       ball.changeXDirection();
     }
 
-    if (ball.pos.y < 0+ ball.height) {
+    if (ball.pos.y < 0) {
       ball.changeYDirection();
     }
   }
