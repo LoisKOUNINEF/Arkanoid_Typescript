@@ -170,7 +170,7 @@ function () {
   CanvasView.prototype.drawBricks = function (bricks) {
     var _this = this;
 
-    bricks.forEach(function (brick) {
+    bricks.map(function (brick) {
       return _this.drawSprite(brick);
     });
   };
@@ -367,7 +367,7 @@ function () {
     var _this = this;
 
     var colliding = false;
-    bricks.forEach(function (brick, i) {
+    bricks.map(function (brick, i) {
       if (_this.isCollidingBrick(ball, brick)) {
         ball.changeYDirection();
 
@@ -703,7 +703,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45219" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "34433" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
