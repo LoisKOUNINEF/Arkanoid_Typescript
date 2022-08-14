@@ -46,6 +46,6 @@ export class CanvasView {
   }
 
   drawBricks(bricks: Brick[]): void {
-    bricks.forEach(brick => this.drawSprite(brick));
+    bricks.map(brick => this.drawSprite(brick));
   }
 }

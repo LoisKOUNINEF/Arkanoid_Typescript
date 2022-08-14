@@ -20,7 +20,7 @@ export class Collision {
   isCollidingBricks(ball: Ball, bricks: Brick[]): boolean {
     let colliding = false;
 
-    bricks.forEach((brick, i) => {
+    bricks.map((brick, i) => {
       if (this.isCollidingBrick(ball, brick)) {
         ball.changeYDirection();
 
