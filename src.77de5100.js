@@ -170,7 +170,7 @@ function () {
   CanvasView.prototype.drawBricks = function (bricks) {
     var _this = this;
 
-    bricks.map(function (brick) {
+    bricks.forEach(function (brick) {
       return _this.drawSprite(brick);
     });
   };
@@ -367,7 +367,7 @@ function () {
     var _this = this;
 
     var colliding = false;
-    bricks.map(function (brick, i) {
+    bricks.forEach(function (brick, i) {
       if (_this.isCollidingBrick(ball, brick)) {
         ball.changeYDirection();
 
@@ -655,7 +655,7 @@ function gameLoop(view, bricks, paddle, ball, collision) {
 
 function startGame(view) {
   score = 0;
-  view.drawInfo('Loading');
+  view.drawInfo('');
   view.drawScore(0);
   var collision = new _Collision.Collision();
   var bricks = (0, _helpers.createBricks)();
@@ -667,13 +667,7 @@ function startGame(view) {
     x: _setup.PADDLE_STARTX,
     y: view.canvas.height - _setup.PADDLE_HEIGHT - 5
   }, _paddle.default);
-  view.drawBricks(bricks);
-  view.drawSprite(paddle);
-  view.drawSprite(ball);
-  setTimeout(function () {
-    view.drawInfo("Let's play!");
-    gameLoop(view, bricks, paddle, ball, collision);
-  }, 1000);
+  gameLoop(view, bricks, paddle, ball, collision);
 }
 
 var view = new _CanvasView.CanvasView('#playField');
@@ -706,7 +700,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "46799" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "36543" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
