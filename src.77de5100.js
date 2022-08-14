@@ -653,18 +653,9 @@ function gameLoop(view, bricks, paddle, ball, collision) {
   });
 }
 
-function wait(ms) {
-  var start = new Date().getTime();
-  var end = start;
-
-  while (end < start + ms) {
-    end = new Date().getTime();
-  }
-}
-
 function startGame(view) {
   score = 0;
-  view.drawInfo('');
+  view.drawInfo('Loading');
   view.drawScore(0);
   var collision = new _Collision.Collision();
   var bricks = (0, _helpers.createBricks)();
@@ -679,8 +670,10 @@ function startGame(view) {
   view.drawBricks(bricks);
   view.drawSprite(paddle);
   view.drawSprite(ball);
-  wait(1000);
-  gameLoop(view, bricks, paddle, ball, collision);
+  setTimeout(function () {
+    view.drawInfo("Let's play!");
+    gameLoop(view, bricks, paddle, ball, collision);
+  }, 1000);
 }
 
 var view = new _CanvasView.CanvasView('#playField');
@@ -713,7 +706,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45051" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "46799" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
