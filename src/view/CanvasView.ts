@@ -38,7 +38,7 @@ export class CanvasView {
 
     this.context?.drawImage(
       brick.image,
-      prick.pos.x,
+      brick.pos.x,
       brick.pos.y,
       brick.width,
       brick.height

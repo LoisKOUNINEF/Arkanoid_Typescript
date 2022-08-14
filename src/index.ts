@@ -35,9 +35,22 @@ function gameLoop(
   bricks: Brick[],
   paddle: Paddle,
   ball: Ball
-  ) {}
+  ) {
+  view.clear();
+  view.drawBricks(bricks);
 
-function startGame(view: CanvasView) {}
+  requestAnimationFrame(() => gameLoop (view, bricks));
+}
+
+function startGame(view: CanvasView) {
+  score = 0;
+  view.drawInfo('');
+  view.drawScore(0);
+
+  const bricks = createBricks();
+
+  gameLoop(view, bricks);
+}
 
 const view = new CanvasView('#playField');
 view.initStartButton(startGame);
