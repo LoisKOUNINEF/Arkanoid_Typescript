@@ -9,6 +9,8 @@
 # production
 /dist
 .cache
+**/wwwroot/app/**/*.map
+**/wwwroot/app/**/*.js
 # misc
 .DS_Store
 .env

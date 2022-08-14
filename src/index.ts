@@ -7,6 +7,8 @@ import { Collision } from './Collision';
 import PADDLE_IMAGE from './images/paddle.png';
 import BALL_IMAGE from './images/ball.png';
 
+import { API_KEY } from './key.js';
+
 import {
   PADDLE_SPEED,
   PADDLE_STARTX,
@@ -22,15 +24,46 @@ import { createBricks } from './helpers';
 
 let gameOver = false;
 let score = 0;
+let currentBest = localStorage.bestArkanoidScore ? JSON.parse(localStorage.bestArkanoidScore) : 0;
+
+function submitScore() {
+  let userScore = parseInt(localStorage.currentArkanoidScore);
+
+  let userEmail = localStorage.sharcadEmail
+  ? JSON.parse(localStorage.sharcadEmail)
+  : prompt("Enter your shaRcade email to send your score !");
+
+  if (userEmail) {
+    localStorage.setItem("sharcadEmail", JSON.stringify(userEmail));
+
+    const data = {
+      "score_token" : {
+        "hi_score" : userScore,
+        "api_key" : API_KEY,
+        "user_email" : userEmail
+      }
+    };
+    fetch(`https://sharcade-api.herokuapp.com/sharcade_api`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .catch((error) => console.log(error));
+  }
+}
 
 function setGameOver(view: CanvasView) {
   view.drawInfo('Game Over !');
   gameOver = false;
+  submitScore();
 }
 
 function setGameWon(view: CanvasView) {
   view.drawInfo('Nice Job !');
   gameOver = false;
+  submitScore();
 }
 
 function gameLoop(
@@ -59,7 +92,11 @@ function gameLoop(
 
   if (collidingBrick) {
     score += 1;
+    localStorage.setItem("currentArkanoidScore", JSON.stringify(score));
     view.drawScore(score);
+    if (score > currentBest) {
+      localStorage.setItem("bestArkanoidScore", JSON.stringify(score));
+    }
   }
 
   if (ball.pos.y > view.canvas.height) gameOver = true;

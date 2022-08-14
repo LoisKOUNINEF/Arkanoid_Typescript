@@ -170,7 +170,7 @@ function () {
   CanvasView.prototype.drawBricks = function (bricks) {
     var _this = this;
 
-    bricks.forEach(function (brick) {
+    bricks.map(function (brick) {
       return _this.drawSprite(brick);
     });
   };
@@ -367,7 +367,7 @@ function () {
     var _this = this;
 
     var colliding = false;
-    bricks.forEach(function (brick, i) {
+    bricks.map(function (brick, i) {
       if (_this.isCollidingBrick(ball, brick)) {
         ball.changeYDirection();
 
@@ -405,6 +405,51 @@ exports.Collision = Collision;
 module.exports = "/paddle.f48d929a.png";
 },{}],"images/ball.png":[function(require,module,exports) {
 module.exports = "/ball.96931fde.png";
+},{}],"key.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.API_KEY = void 0;
+
+function _0x1327() {
+  var _0x242aea = ['2qfImxi', '679720KmXDxH', '226325vZwVig', '99JnbxIk', '139432BrSVcp', '1265520wTcOrF', '17659shozMv', '900FFloTw', '36159pcItPf', '188DSHPQj', '63894wpNlTL', '539zeTBSC'];
+
+  _0x1327 = function _0x1327() {
+    return _0x242aea;
+  };
+
+  return _0x1327();
+}
+
+function _0x4a2c(_0x53faee, _0x49feee) {
+  var _0x1327a7 = _0x1327();
+
+  return _0x4a2c = function _0x4a2c(_0x4a2c0b, _0x32a2fd) {
+    _0x4a2c0b = _0x4a2c0b - 0x1e9;
+    var _0x30f137 = _0x1327a7[_0x4a2c0b];
+    return _0x30f137;
+  }, _0x4a2c(_0x53faee, _0x49feee);
+}
+
+(function (_0x5ce181, _0x42a98f) {
+  var _0x3d060d = _0x4a2c,
+      _0xfaac1d = _0x5ce181();
+
+  while (!![]) {
+    try {
+      var _0xc7ee09 = parseInt(_0x3d060d(0x1ee)) / 0x1 * (-parseInt(_0x3d060d(0x1f4)) / 0x2) + -parseInt(_0x3d060d(0x1f0)) / 0x3 * (parseInt(_0x3d060d(0x1f1)) / 0x4) + parseInt(_0x3d060d(0x1e9)) / 0x5 + parseInt(_0x3d060d(0x1f2)) / 0x6 * (-parseInt(_0x3d060d(0x1f3)) / 0x7) + parseInt(_0x3d060d(0x1ec)) / 0x8 * (parseInt(_0x3d060d(0x1eb)) / 0x9) + parseInt(_0x3d060d(0x1ed)) / 0xa + parseInt(_0x3d060d(0x1ea)) / 0xb * (parseInt(_0x3d060d(0x1ef)) / 0xc);
+
+      if (_0xc7ee09 === _0x42a98f) break;else _0xfaac1d['push'](_0xfaac1d['shift']());
+    } catch (_0x59a9d7) {
+      _0xfaac1d['push'](_0xfaac1d['shift']());
+    }
+  }
+})(_0x1327, 0x90d41);
+
+var API_KEY = 'UAe1mYoNu01KhE3h';
+exports.API_KEY = API_KEY;
 },{}],"images/brick-red.png":[function(require,module,exports) {
 module.exports = "/brick-red.c1be1822.png";
 },{}],"images/brick-blue.png":[function(require,module,exports) {
@@ -607,6 +652,8 @@ var _paddle = _interopRequireDefault(require("./images/paddle.png"));
 
 var _ball = _interopRequireDefault(require("./images/ball.png"));
 
+var _key = require("./key.js");
+
 var _setup = require("./setup");
 
 var _helpers = require("./helpers");
@@ -615,15 +662,43 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var gameOver = false;
 var score = 0;
+var currentBest = localStorage.bestArkanoidScore ? JSON.parse(localStorage.bestArkanoidScore) : 0;
+
+function submitScore() {
+  var userScore = parseInt(localStorage.currentArkanoidScore);
+  var userEmail = localStorage.sharcadEmail ? JSON.parse(localStorage.sharcadEmail) : prompt("Enter your shaRcade email to send your score !");
+
+  if (userEmail) {
+    localStorage.setItem("sharcadEmail", JSON.stringify(userEmail));
+    var data = {
+      "score_token": {
+        "hi_score": userScore,
+        "api_key": _key.API_KEY,
+        "user_email": userEmail
+      }
+    };
+    fetch("https://sharcade-api.herokuapp.com/sharcade_api", {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).catch(function (error) {
+      return console.log(error);
+    });
+  }
+}
 
 function setGameOver(view) {
   view.drawInfo('Game Over !');
   gameOver = false;
+  submitScore();
 }
 
 function setGameWon(view) {
   view.drawInfo('Nice Job !');
   gameOver = false;
+  submitScore();
 }
 
 function gameLoop(view, bricks, paddle, ball, collision) {
@@ -642,7 +717,12 @@ function gameLoop(view, bricks, paddle, ball, collision) {
 
   if (collidingBrick) {
     score += 1;
+    localStorage.setItem("currentArkanoidScore", JSON.stringify(score));
     view.drawScore(score);
+
+    if (score > currentBest) {
+      localStorage.setItem("bestArkanoidScore", JSON.stringify(score));
+    }
   }
 
   if (ball.pos.y > view.canvas.height) gameOver = true;
@@ -672,7 +752,7 @@ function startGame(view) {
 
 var view = new _CanvasView.CanvasView('#playField');
 view.initStartButton(startGame);
-},{"./view/CanvasView":"view/CanvasView.ts","./sprites/Ball":"sprites/Ball.ts","./sprites/Paddle":"sprites/Paddle.ts","./Collision":"Collision.ts","./images/paddle.png":"images/paddle.png","./images/ball.png":"images/ball.png","./setup":"setup.ts","./helpers":"helpers.ts"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./view/CanvasView":"view/CanvasView.ts","./sprites/Ball":"sprites/Ball.ts","./sprites/Paddle":"sprites/Paddle.ts","./Collision":"Collision.ts","./images/paddle.png":"images/paddle.png","./images/ball.png":"images/ball.png","./key.js":"key.js","./setup":"setup.ts","./helpers":"helpers.ts"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -700,7 +780,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "36543" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "37709" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
