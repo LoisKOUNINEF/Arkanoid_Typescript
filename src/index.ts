@@ -98,8 +98,13 @@ function startGame(view: CanvasView) {
     PADDLE_IMAGE
     )
 
+  view.drawBricks(bricks);
+  view.drawSprite(paddle);
+  view.drawSprite(ball);
+
   gameLoop(view, bricks, paddle, ball, collision);
 }
 
 const view = new CanvasView('#playField');
+
 view.initStartButton(startGame);
