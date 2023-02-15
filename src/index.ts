@@ -25,7 +25,7 @@ import { createBricks } from './helpers';
 let gameOver = false;
 let score = 0;
 let currentBest = localStorage.bestArkanoidScore ? JSON.parse(localStorage.bestArkanoidScore) : 0;
-
+window.addEventListener('DOMContentLoaded', () => {
 function submitScore() {
   let userScore = parseInt(localStorage.currentArkanoidScore);
 
@@ -65,6 +65,7 @@ function setGameWon(view: CanvasView) {
   gameOver = false;
   submitScore();
 }
+
 
 function gameLoop(
   view: CanvasView,
@@ -141,3 +142,4 @@ function startGame(view: CanvasView) {
 const view = new CanvasView('#playField');
 
 view.initStartButton(startGame);
+}
