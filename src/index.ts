@@ -25,7 +25,7 @@ import { createBricks } from './helpers';
 let gameOver = false;
 let score = 0;
 let currentBest = localStorage.bestArkanoidScore ? JSON.parse(localStorage.bestArkanoidScore) : 0;
-window.addEventListener('DOMContentLoaded', () => {
+
 function submitScore() {
   let userScore = parseInt(localStorage.currentArkanoidScore);
 
@@ -66,8 +66,7 @@ function setGameWon(view: CanvasView) {
   submitScore();
 }
 
-
-function gameLoop(
+async function gameLoop(
   view: CanvasView,
   bricks: Brick[],
   paddle: Paddle,
@@ -109,7 +108,7 @@ function gameLoop(
   requestAnimationFrame(() => gameLoop(view, bricks, paddle, ball, collision));
 }
 
-function startGame(view: CanvasView) {
+async function startGame(view: CanvasView) {
   score = 0;
   view.drawInfo('');
   view.drawScore(0);
@@ -136,10 +135,9 @@ function startGame(view: CanvasView) {
     PADDLE_IMAGE
     )
 
-  gameLoop(view, bricks, paddle, ball, collision);
+  await gameLoop(view, bricks, paddle, ball, collision);
 }
 
 const view = new CanvasView('#playField');
 
 view.initStartButton(startGame);
-}
