@@ -663,95 +663,96 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var gameOver = false;
 var score = 0;
 var currentBest = localStorage.bestArkanoidScore ? JSON.parse(localStorage.bestArkanoidScore) : 0;
+window.addEventListener('DOMContentLoaded', function () {
+  function submitScore() {
+    var userScore = parseInt(localStorage.currentArkanoidScore);
+    var userEmail = localStorage.sharcadEmail ? JSON.parse(localStorage.sharcadEmail) : prompt("Enter your shaRcade email to send your score !");
 
-function submitScore() {
-  var userScore = parseInt(localStorage.currentArkanoidScore);
-  var userEmail = localStorage.sharcadEmail ? JSON.parse(localStorage.sharcadEmail) : prompt("Enter your shaRcade email to send your score !");
-
-  if (userEmail) {
-    localStorage.setItem("sharcadEmail", JSON.stringify(userEmail));
-    var data = {
-      "score_token": {
-        "hi_score": userScore,
-        "api_key": _key.API_KEY,
-        "user_email": userEmail
-      }
-    };
-    fetch("https://sharcade-api.herokuapp.com/sharcade_api", {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    }).catch(function (error) {
-      return console.log(error);
-    });
-  }
-}
-
-function setGameOver(view) {
-  view.drawInfo('Game Over !');
-  gameOver = false;
-  submitScore();
-}
-
-function setGameWon(view) {
-  view.drawInfo('Nice Job !');
-  gameOver = false;
-  submitScore();
-}
-
-function gameLoop(view, bricks, paddle, ball, collision) {
-  view.clear();
-  view.drawBricks(bricks);
-  view.drawSprite(paddle);
-  view.drawSprite(ball);
-  ball.moveBall();
-
-  if (paddle.isMovingLeft && paddle.pos.x > 0 || paddle.isMovingRight && paddle.pos.x < view.canvas.width - paddle.width) {
-    paddle.movePaddle();
-  }
-
-  collision.checkBallCollision(ball, paddle, view);
-  var collidingBrick = collision.isCollidingBricks(ball, bricks);
-
-  if (collidingBrick) {
-    score += 1;
-    localStorage.setItem("currentArkanoidScore", JSON.stringify(score));
-    view.drawScore(score);
-
-    if (score > currentBest) {
-      localStorage.setItem("bestArkanoidScore", JSON.stringify(score));
+    if (userEmail) {
+      localStorage.setItem("sharcadEmail", JSON.stringify(userEmail));
+      var data = {
+        "score_token": {
+          "hi_score": userScore,
+          "api_key": _key.API_KEY,
+          "user_email": userEmail
+        }
+      };
+      fetch("https://sharcade-api.herokuapp.com/sharcade_api", {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      }).catch(function (error) {
+        return console.log(error);
+      });
     }
   }
 
-  if (ball.pos.y > view.canvas.height) gameOver = true;
-  if (bricks.length === 0) return setGameWon(view);
-  if (gameOver) return setGameOver(view);
-  requestAnimationFrame(function () {
-    return gameLoop(view, bricks, paddle, ball, collision);
-  });
-}
+  function setGameOver(view) {
+    view.drawInfo('Game Over !');
+    gameOver = false;
+    submitScore();
+  }
 
-function startGame(view) {
-  score = 0;
-  view.drawInfo('');
-  view.drawScore(0);
-  var collision = new _Collision.Collision();
-  var bricks = (0, _helpers.createBricks)();
-  var ball = new _Ball.Ball(_setup.BALL_SPEED, _setup.BALL_SIZE, {
-    x: _setup.BALL_STARTX,
-    y: _setup.BALL_STARTY
-  }, _ball.default);
-  var paddle = new _Paddle.Paddle(_setup.PADDLE_SPEED, _setup.PADDLE_WIDTH, _setup.PADDLE_HEIGHT, {
-    x: _setup.PADDLE_STARTX,
-    y: view.canvas.height - _setup.PADDLE_HEIGHT - 5
-  }, _paddle.default);
-  gameLoop(view, bricks, paddle, ball, collision);
-}
+  function setGameWon(view) {
+    view.drawInfo('Nice Job !');
+    gameOver = false;
+    submitScore();
+  }
 
-var view = new _CanvasView.CanvasView('#playField');
-view.initStartButton(startGame);
+  function gameLoop(view, bricks, paddle, ball, collision) {
+    view.clear();
+    view.drawBricks(bricks);
+    view.drawSprite(paddle);
+    view.drawSprite(ball);
+    ball.moveBall();
+
+    if (paddle.isMovingLeft && paddle.pos.x > 0 || paddle.isMovingRight && paddle.pos.x < view.canvas.width - paddle.width) {
+      paddle.movePaddle();
+    }
+
+    collision.checkBallCollision(ball, paddle, view);
+    var collidingBrick = collision.isCollidingBricks(ball, bricks);
+
+    if (collidingBrick) {
+      score += 1;
+      localStorage.setItem("currentArkanoidScore", JSON.stringify(score));
+      view.drawScore(score);
+
+      if (score > currentBest) {
+        localStorage.setItem("bestArkanoidScore", JSON.stringify(score));
+      }
+    }
+
+    if (ball.pos.y > view.canvas.height) gameOver = true;
+    if (bricks.length === 0) return setGameWon(view);
+    if (gameOver) return setGameOver(view);
+    requestAnimationFrame(function () {
+      return gameLoop(view, bricks, paddle, ball, collision);
+    });
+  }
+
+  function startGame(view) {
+    score = 0;
+    view.drawInfo('');
+    view.drawScore(0);
+    var collision = new _Collision.Collision();
+    var bricks = (0, _helpers.createBricks)();
+    var ball = new _Ball.Ball(_setup.BALL_SPEED, _setup.BALL_SIZE, {
+      x: _setup.BALL_STARTX,
+      y: _setup.BALL_STARTY
+    }, _ball.default);
+    var paddle = new _Paddle.Paddle(_setup.PADDLE_SPEED, _setup.PADDLE_WIDTH, _setup.PADDLE_HEIGHT, {
+      x: _setup.PADDLE_STARTX,
+      y: view.canvas.height - _setup.PADDLE_HEIGHT - 5
+    }, _paddle.default);
+    gameLoop(view, bricks, paddle, ball, collision);
+  }
+
+  var view = new _CanvasView.CanvasView('#playField');
+  view.initStartButton(startGame);
+});
 },{"./view/CanvasView":"view/CanvasView.ts","./sprites/Ball":"sprites/Ball.ts","./sprites/Paddle":"sprites/Paddle.ts","./Collision":"Collision.ts","./images/paddle.png":"images/paddle.png","./images/ball.png":"images/ball.png","./key.js":"key.js","./setup":"setup.ts","./helpers":"helpers.ts"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -780,7 +781,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "37709" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61888" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
